@@ -21,6 +21,18 @@ public class ClarificationService implements IClarificationEventListener {
 	@Override
 	public void clarificationAdded(IClarification arg0) {
 		
+		//TODO:  check to see if the added clar is supposed to go to this team?
+		
+		String clarId = String.format("%s-%s", arg0.getSiteNumber(),arg0.getNumber());
+		
+		JsonObject builder = Json.createObjectBuilder()
+				.add("type", WebsocketMsgType.CLARIFICATION.name().toLowerCase())
+				.add("id", clarId)
+				.add("teamId", this.teamId)
+				.build();
+
+		this.client.sendMessage(builder.toString());
+
 	}
 
 	@Override
