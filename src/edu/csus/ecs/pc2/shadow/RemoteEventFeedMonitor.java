@@ -49,6 +49,8 @@ public class RemoteEventFeedMonitor implements Runnable {
     //set this to true to filter out all but those submissions/judgements listed in "submissionFilterIDs"
     private boolean respectSubmissionFilter = false; 
     
+    private boolean readOnly = true;
+    
     //a list of submissions which are the only ones we are interested in if respectSubmissionFilter is true
     private String [] submissionFilterIDs = {
 
@@ -122,6 +124,8 @@ public class RemoteEventFeedMonitor implements Runnable {
 
             try {
 
+                log.info("Starting Event Feed Monitor; readonly mode = " + readOnly);
+                
                 //wrap the event stream (which consists of newline-delimited character strings representing events)
                 // in a BufferedReader
                 BufferedReader reader = new BufferedReader(new InputStreamReader(remoteInputStream));
@@ -162,6 +166,12 @@ public class RemoteEventFeedMonitor implements Runnable {
 //                                System.out.println("\nfound event: " + eventType + ":" + event); // TODO log this.
 
                                 if ("submissions".equals(eventType)) {
+                                    
+                                    if (readOnly) {
+                                        log.info("Skipping submission while in read-only mode");
+                                        event = reader.readLine();
+                                        continue;
+                                    }
 //                                    System.out.println("debug 22 found submission event");
 
                                     //process a submission event
@@ -293,6 +303,10 @@ public class RemoteEventFeedMonitor implements Runnable {
                                             }
 
                                             try {
+                                                System.out.println ("Submitting to PC2 server: team " + runSubmission.getTeam_id() +  ", problem " + runSubmission.getProblem_id()
+                                                                    + ", language " + runSubmission.getLanguage_id());
+                                                log.info("Submitting to PC2 server: team " + runSubmission.getTeam_id() +  ", problem " + runSubmission.getProblem_id()
+                                                            + ", language " + runSubmission.getLanguage_id());
                                                 submitter.submitRun("team" + runSubmission.getTeam_id(), runSubmission.getProblem_id(), runSubmission.getLanguage_id(), mainFile, auxFiles,
                                                         overrideTimeMS, overrideSubmissionID);
                                             } catch (Exception e) {
