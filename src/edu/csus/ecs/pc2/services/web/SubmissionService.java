@@ -12,6 +12,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -195,6 +196,10 @@ public class SubmissionService implements Feature {
 
                         SerializedFile mainFile = runFiles.getMainFile();
                         SerializedFile[] otherFiles = runFiles.getOtherFiles();
+                        
+                        //ensure there are no duplicated files in the submission
+                        otherFiles = removeDuplicates (mainFile, otherFiles);
+                        
                         java.nio.file.Path tmpDir = null;
                         try {
                             tmpDir = Files.createTempDirectory("subService");
@@ -234,6 +239,32 @@ public class SubmissionService implements Feature {
         }
         controller.getLog().log(Log.INFO, "Unable to find submission " + submissionId + "; returning 'NOT_FOUND'");
         return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    /**
+     * Scans the specified list of "otherFiles" for files that are duplicates of either the specified mainFile or 
+     * some other file in the otherFiles list, removing any duplicates from the otherFiles list.
+     * 
+     * @param mainFile the main file for a submission.
+     * @param otherFiles an array of additional files which were supplied with a submission.
+     * @return an array of {@link SerializedFile] identical to the received array, except guaranteed that none
+     *                  of the entries are duplicates of either each other or of the specified main file.
+     */
+    private SerializedFile[] removeDuplicates(SerializedFile mainFile, SerializedFile[] otherFiles) {
+        
+        Vector<SerializedFile> newList = new Vector<SerializedFile>();
+        
+        //check each file in "otherFiles"
+        for (int i=0; i<otherFiles.length; i++) {
+            
+            //check if the otherfile is the same as the mainFile or the same as a file already in the newList
+            if (!(otherFiles[i].equals(mainFile)) && !(newList.contains(otherFiles[i]))) {
+                
+                //the current otherFile is not the same as main and is not already in newlist; add it to newlist
+                newList.add((SerializedFile)otherFiles[i]);
+            }
+        }
+        return newList.toArray(new SerializedFile[0]);
     }
 
     @GET
