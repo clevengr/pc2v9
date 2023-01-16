@@ -1,0 +1,43 @@
+# Configuration for PC2 Demo1 Contest
+--- 
+
+# General contest parameters:
+name: PC-Squared Demo Contest 1
+short-name: PC2 Demo1
+start-time: 2043-01-01 00:00:01-08
+duration: 5:00:00
+scoreboard-freeze-length: 01:00:00
+
+# Programming languages allowed (active) in contest:
+languages:
+  - name: Java
+  - name: GNU C++
+
+# Contest problems (details for each problem are expected to be found
+# in the folder specified by "short-name").
+problemset:
+  - letter: A
+    short-name: hello
+    color: red
+    rgb: "#FF0000"
+
+  - letter: B
+    short-name: sumit
+    color: blue
+    rgb: "#0000FF"
+
+# PC2 Accounts to be created (note: TEAM accounts are created by loading a "teams.tsv" file)
+accounts:
+  - account: JUDGE
+    count: 5 
+
+  - account: SCOREBOARD
+    count: 2
+
+# Judge accounts which are to be configured for "Auto-Judging":
+auto-judging:
+  - account: JUDGE
+    number: 4,5
+    letters: A,B
+    
+# EOF

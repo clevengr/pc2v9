@@ -1,0 +1,17 @@
+# Problem-specific configuration for Demo1 "Sumit" problem.
+# Problem statement: print the sum of the non-negative integers in the input.
+--- 
+
+name: Sumit
+source: PC^2 Team 
+author: PC^2 Team 
+
+limits: 
+   timeout: 5
+
+input: 
+   readFromSTDIN: true
+
+computer-judged: true
+manual-review: true
+stop-on-first-failed-test-case: true

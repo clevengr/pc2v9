@@ -1,0 +1,10 @@
+# Problem configuration for Problem "hello"
+--- 
+
+name: Hello World
+source: PC^2 Team
+author: PC^2 Team
+
+limits: 
+   timeout: 10 
+
