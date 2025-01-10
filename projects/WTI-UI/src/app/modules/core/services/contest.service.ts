@@ -19,9 +19,13 @@ export class ContestService extends IContestService {
   standingsAreCurrent: boolean ;
   cachedStandings: Observable<String> ;
 
-  //the WTI-UI timer service which updates on-screen elapsed and remaining time when started (enabled)
-  contestTimer: ContestTimerService = new ContestTimerService(this) ; 
+  //the WTI-UI timer service which tracks elapsed and remaining time when started (enabled)
+  //This is done on a separate "Worker" thread so that it keeps running when the browser is minimized
+  //Original code:
+  //contestTimer: ContestTimerService = new ContestTimerService(this) ; 
   
+  timerWorker = new Worker(new URL('./contestTimer.service.ts', import.meta.url));
+
   constructor(private _httpClient: HttpClient) {
     super();
 	if (DEBUG_MODE) {
