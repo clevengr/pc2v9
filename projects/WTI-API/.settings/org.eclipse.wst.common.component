@@ -4,6 +4,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/websockets"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main"/>
+        <wb-resource deploy-path="/" source-path="/WebContent/WEB-INF/lib"/>
         <property name="context-root" value="/"/>
         <property name="java-output-path" value="/WTI-API/bin"/>
     </wb-module>
