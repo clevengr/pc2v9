@@ -22,7 +22,7 @@ export class ContestService extends IContestService {
   //the WTI-UI timer service which tracks elapsed and remaining time when started (enabled)
   //This is done on a separate "Worker" thread so that it keeps running when the browser is minimized
   //Original code:
-  //contestTimer: ContestTimerService = new ContestTimerService(this) ; 
+  contestTimer: ContestTimerService = new ContestTimerService(this) ; 
   
   timerWorker = new Worker(new URL('./contestTimer.service.ts', import.meta.url));
 
