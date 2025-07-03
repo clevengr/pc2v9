@@ -3,10 +3,10 @@
 import java.io.*;
 
 //
-// File:    ISumit.java
-// Purpose: to print the sum of the positive integers from stdin
+// File:    ISumitPartial.java
+// Purpose: to print the sum of the integers from stdin but failing to ignore negative numbers
 
-public class ISumit {
+public class ISumitPartial {
     public static void main(String[] args) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1);
@@ -16,8 +16,7 @@ public class ISumit {
             int rv = 0;
             while ((line = br.readLine()) != null) {
                 rv = new Integer(line.trim()).intValue();
-                if (rv > 0)
-                    sum = sum + rv;
+                sum = sum + rv;
             }
             System.out.print("The sum of the integers is ");
             System.out.println(sum);
