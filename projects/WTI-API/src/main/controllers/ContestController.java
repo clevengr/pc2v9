@@ -737,7 +737,7 @@ public class ContestController extends MainController {
 				// check if some event has occurred which could have changed the standings
 				
 				/**
-				 * Should scoreboaed only show the teams in a team's division?
+				 * Should scoreboard only show the teams in a team's division?
 				 */
 				boolean useDivisionFilter = false;
 
@@ -930,8 +930,6 @@ public class ContestController extends MainController {
 		
 		JSONObject jsonStandingsObject = XML.toJSONObject(xmlStandings);
 	
-		logger.fine("Standings JSON: " + jsonStandingsObject.toString(2));
-
 		return jsonStandingsObject.toString();
 	}
 
