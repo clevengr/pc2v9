@@ -59,10 +59,12 @@ public class CLICSScoreboard {
     }
 
     /**
-     * Fill in the scoreboard information
+     * Fill in the scoreboard information for the whole contest or for a single group.
      *
+     * @param model contest model
+     * @param group when non-null, standings are restricted to this group via DSA wantedGroups filtering
      */
-    public CLICSScoreboard(IInternalContest model, Group group, Integer division)  throws IllegalContestState, JAXBException, IOException {
+    public CLICSScoreboard(IInternalContest model, Group group)  throws IllegalContestState, JAXBException, IOException {
 
         DefaultScoringAlgorithm scoringAlgorithm = new DefaultScoringAlgorithm();
 
@@ -75,7 +77,7 @@ public class CLICSScoreboard {
             groupList.add(group);
         }
         // legacy - standings are created as XML, and we convert that to JSON.
-        String xml = scoringAlgorithm.getStandings(model, null, division, groupList, properties, StaticLog.getLog());
+        String xml = scoringAlgorithm.getStandings(model, null, null, groupList, properties, StaticLog.getLog());
 
         ContestStandings contestStandings = ScoreboardUtilities.createContestStandings(xml);
 
