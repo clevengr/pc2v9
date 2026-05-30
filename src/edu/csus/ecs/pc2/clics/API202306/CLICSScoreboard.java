@@ -77,7 +77,7 @@ public class CLICSScoreboard {
             groupList.add(group);
         }
         // legacy - standings are created as XML, and we convert that to JSON.
-        String xml = scoringAlgorithm.getStandings(model, null, null, groupList, properties, StaticLog.getLog());
+        String xml = scoringAlgorithm.getStandings(model, null, groupList, properties, StaticLog.getLog());
 
         ContestStandings contestStandings = ScoreboardUtilities.createContestStandings(xml);
 
