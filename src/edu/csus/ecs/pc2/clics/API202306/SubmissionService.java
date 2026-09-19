@@ -660,9 +660,11 @@ public class SubmissionService implements Feature {
                 }
 
                 try {
+                    // Single-pass extract with an inflated-byte cap (contest max source size).
+                    // Do not pre-scan zip metadata with ZipFile/temp files; that double-reads the zip
+                    // and is unnecessary when getIFiles already stops once the limit is exceeded.
                     byte[] zipBytes = Base64.getDecoder().decode(firstFile.getData());
                     long maxSourceSizeBytes = model.getContestInformation().getMaxSourceSizeInBytes();
-                    EventFeedUtilities.enforceUncompressedZipSourceSizeLimit(zipBytes, maxSourceSizeBytes);
                     srcFiles = EventFeedUtilities.getIFiles(zipBytes, maxSourceSizeBytes);
                 } catch (SubmissionRejectedException sre) {
                     log.log(Level.WARNING, "SubmissionRejectedException (Source too large) submitting CLICS API run for team "
