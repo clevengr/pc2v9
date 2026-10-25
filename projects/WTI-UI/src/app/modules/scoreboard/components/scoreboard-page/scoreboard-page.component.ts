@@ -120,17 +120,22 @@ export class ScoreboardPageComponent implements OnInit, OnDestroy, DoCheck {
 
 	/**
 	 * Update scoreboard standings whenever group dropdown ("filter") changes.
-	 * Blur the select afterward so arrow keys scroll the scoreboard instead of
-	 * cycling dropdown options (a focused native select keeps consuming those keys).
 	 */
-	onGroupFilterChange(newGroupExternalId: string, event?: Event): void {
+	onGroupFilterChange(newGroupExternalId: string): void {
 		const next = newGroupExternalId ?? '';
 		if (next === this.selectedGroupExternalId) {
 			return;
 		}
 		this.selectedGroupExternalId = next;
-		this.teamStandings = this.getFilteredStandings(this.fullTeamStandings);
-		if (event?.target instanceof HTMLSelectElement) {
+		this.loadStandings();
+	}
+
+	/**
+	 * Blur the group select so arrow keys scroll the scoreboard instead of
+	 * cycling dropdown options (a focused native select keeps consuming those keys).
+	 */
+	blurGroupFilter(event: Event): void {
+		if (event.target instanceof HTMLSelectElement) {
 			event.target.blur();
 		}
 	}
