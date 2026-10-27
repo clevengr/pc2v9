@@ -17,6 +17,8 @@ interface ProblemHeader {
 interface ScoreboardGroupOption {
 	externalId: string;
 	displayName: string;
+	/** True when standings group/@divisionWide is true (division-wide cohort). */
+	divisionWide: boolean;
 }
   
 @Component({
@@ -150,7 +152,9 @@ export class ScoreboardPageComponent implements OnInit, OnDestroy, DoCheck {
 			return false;
 		}
 		for (let i = 0; i < current.length; i++) {
-			if (current[i].externalId !== next[i].externalId || current[i].displayName !== next[i].displayName) {
+			if (current[i].externalId !== next[i].externalId
+					|| current[i].displayName !== next[i].displayName
+					|| current[i].divisionWide !== next[i].divisionWide) {
 				return false;
 			}
 		}
@@ -330,15 +334,24 @@ export class ScoreboardPageComponent implements OnInit, OnDestroy, DoCheck {
 			const label = title !== undefined && title !== null && String(title).trim() !== ''
 				? String(title).trim()
 				: `Group ${stringExternalId}`;
-				
-				
-			out.push({ externalId: stringExternalId, displayName: label });
+
+			const divisionWideRaw = this.readXmlishField(row, 'divisionWide');
+			const divisionWide = String(divisionWideRaw ?? '').trim().toLowerCase() === 'true';
+
+			out.push({
+				externalId: stringExternalId,
+				displayName: label,
+				divisionWide
+			});
 		}
-		
-		//return options sorted alphabetically by display name, case-insensitive
-		return out.sort((a, b) =>
-			a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' })
-		);
+
+		// Division-wide groups first, then others; alphabetical within each tier.
+		return out.sort((a, b) => {
+			if (a.divisionWide !== b.divisionWide) {
+				return a.divisionWide ? -1 : 1;
+			}
+			return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+		});
 	}
 
 	private readShowAllTeamsFlag(standings: any): boolean {
@@ -419,7 +432,11 @@ export class ScoreboardPageComponent implements OnInit, OnDestroy, DoCheck {
 		}
 		return Array.from(idToLabel.entries())
 			.sort((a, b) => a[1].localeCompare(b[1], undefined, { sensitivity: 'base' }))
-			.map(([externalId, displayName]) => ({ externalId, displayName }));
+			.map(([externalId, displayName]) => ({
+				externalId,
+				displayName,
+				divisionWide: false
+			}));
 	}
 
 	private getFilteredStandings(allRows: any[]): any[] {
