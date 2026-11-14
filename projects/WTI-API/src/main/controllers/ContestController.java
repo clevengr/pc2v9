@@ -735,6 +735,9 @@ public class ContestController extends MainController {
 			logger.info("Standings requested by team " + userInformation.getMyClient().getLoginName());
 			
 			xlog(logger, "debug 22 Start" );
+
+			// Filled inside the lock below, then used to build this request's response.
+			String standingsJson;
 			
 			//insure that only one browser client at a time can attempt to use the DSA to update standings
 			synchronized (updateStandingsMutex) {
@@ -855,11 +858,15 @@ public class ContestController extends MainController {
 					}
 					wtiServerStandingsAreCurrent = true;
 				}
+
+				// Copy while the lock is still held. Division mode keeps one shared document for
+				// every team; reading currentJSONStandings after the unlock lets another team's
+				// reload replace it before this request builds its response.
+				standingsJson = currentJSONStandings;
 			}//end synchronized block
 			
 			// standings are (now) current; return them to requestor.
 			// showOnlyMe is applied per request so the shared cache still holds every team.
-			String standingsJson = currentJSONStandings;
 			if (ini != null && ini.isShowOnlyMeOnWTIScoreboard()) {
 				standingsJson = keepOnlyRequestingTeam(standingsJson, userInformation);
 			}
